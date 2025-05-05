@@ -1,158 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // État du jeu
-    const gameState = {
-        myHP: 100,
-        enemyHP: 100,
-        isAnimating: false,
-        battleLog: []
-    };
-
-    // Références DOM
-    const elements = {
-        mySprite: document.querySelector('.my-pokemon .battle-sprite'),
-        enemySprite: document.querySelector('.enemy-pokemon .battle-sprite'),
-        myHPBar: document.querySelector('.my-pokemon .hp-bar'),
-        enemyHPBar: document.querySelector('.enemy-pokemon .hp-bar'),
-        moveButtons: document.querySelectorAll('.move-btn'),
-        battleLog: document.querySelector('.battle-log'),
-        battleArena: document.querySelector('.battle-arena')
-    };
-
-    // Gestionnaire d'attaques
-    function handleAttack(isPlayerAttack, moveType, damage) {
-        if (gameState.isAnimating) return;
-        gameState.isAnimating = true;
-
-        const attacker = isPlayerAttack ? elements.mySprite : elements.enemySprite;
-        const defender = isPlayerAttack ? elements.enemySprite : elements.mySprite;
-        const hpBar = isPlayerAttack ? elements.enemyHPBar : elements.myHPBar;
-
-        // Animation d'attaque
-        animateAttack(attacker, defender, moveType, damage, hpBar, isPlayerAttack);
-    }
-
-    // Animation d'attaque
-    function animateAttack(attacker, defender, moveType, damage, hpBar, isPlayerAttack) {
-        const direction = isPlayerAttack ? 1 : -1;
-        
-        // Animation de l'attaquant
-        attacker.style.transform = `translateX(${20 * direction}px)`;
-        
-        setTimeout(() => {
-            // Effet visuel
-            createAttackEffect(moveType, defender);
-            
-            // Animation du défenseur
-            defender.style.animation = 'shake 0.5s ease';
-            
-            // Mise à jour des PV
-            updateHP(hpBar, damage, isPlayerAttack);
-            
-            // Log de combat
-            addBattleLog(isPlayerAttack, moveType, damage);
-            
-            setTimeout(() => {
-                // Réinitialisation des positions
-                attacker.style.transform = '';
-                defender.style.animation = '';
-                gameState.isAnimating = false;
-            }, 500);
-        }, 300);
-    }
-
-    // Mise à jour des PV
-    function updateHP(hpBar, damage, isPlayerAttack) {
-        const target = isPlayerAttack ? 'enemyHP' : 'myHP';
-        gameState[target] = Math.max(0, gameState[target] - damage);
-        
-        hpBar.style.width = `${gameState[target]}%`;
-        
-        // Changement de couleur selon les PV
-        if (gameState[target] <= 20) {
-            hpBar.style.background = 'linear-gradient(to right, #ff4136, #ff725c)';
-        } else if (gameState[target] <= 50) {
-            hpBar.style.background = 'linear-gradient(to right, #ffdc00, #ffe066)';
-        }
-
-        return gameState[target] <= 0;
-    }
-
-    // Log de combat
-    function addBattleLog(isPlayerAttack, moveType, damage) {
-        const who = isPlayerAttack ? 'Votre Pokémon' : 'Pokémon adverse';
-        const message = `${who} utilise ${moveType} et inflige ${damage} dégâts !`;
-        
-        const logEntry = document.createElement('p');
-        logEntry.textContent = message;
-        elements.battleLog.appendChild(logEntry);
-        elements.battleLog.scrollTop = elements.battleLog.scrollHeight;
-    }
-
-    // Effets visuels améliorés
-    function createAttackEffect(moveType, target) {
-        const effect = document.createElement('div');
-        effect.className = `attack-effect ${moveType}`;
-        effect.style.cssText = `
-            position: absolute;
-            z-index: 100;
-            pointer-events: none;
-            animation: attackAnim 0.6s forwards;
-        `;
-        
-        // Positionnement de l'effet
-        const targetRect = target.getBoundingClientRect();
-        const arenaRect = elements.battleArena.getBoundingClientRect();
-        effect.style.left = `${targetRect.left - arenaRect.left}px`;
-        effect.style.top = `${targetRect.top - arenaRect.top}px`;
-        
-        elements.battleArena.appendChild(effect);
-        setTimeout(() => effect.remove(), 600);
-    }
-
-    // Gestion des particules d'arrière-plan
-    function createParticles() {
-        for (let i = 0; i < 15; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'battle-particle';
-            particle.style.cssText = `
-                position: absolute;
-                width: ${Math.random() * 4 + 2}px;
-                height: ${Math.random() * 4 + 2}px;
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 50%;
-                left: ${Math.random() * 100}%;
-                top: ${Math.random() * 100}%;
-                pointer-events: none;
-                animation: float ${Math.random() * 8 + 4}s infinite ease-in-out;
-            `;
-            elements.battleArena.appendChild(particle);
-        }
-    }
-
-    createParticles();
-
-    // Initialisation des boutons d'attaque
-    elements.moveButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (gameState.isAnimating) return;
-            
-            const moveType = button.dataset.type;
-            const damage = parseInt(button.dataset.power) || Math.floor(Math.random() * 20 + 10);
-            
-            // Attaque du joueur
-            handleAttack(true, moveType, damage);
-            
-            // Contre-attaque
-            setTimeout(() => {
-                if (!gameState.isAnimating && gameState.enemyHP > 0) {
-                    const enemyDamage = Math.floor(Math.random() * 20 + 10);
-                    handleAttack(false, 'normal', enemyDamage);
-                }
-            }, 1500);
-        });
-    });
-
-    // Ajout des styles d'animation
+    // Cette fonction va maintenant compléter les animations de combat déjà gérées par main.js
+    
+    // Styles d'animation supplémentaires
     const styleSheet = document.createElement('style');
     styleSheet.textContent = `
         @keyframes shake {
@@ -167,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
             100% { transform: scale(0); opacity: 0; }
         }
         
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
         .battle-sprite {
             transition: transform 0.3s ease, filter 0.3s ease;
         }
@@ -175,12 +29,163 @@ document.addEventListener('DOMContentLoaded', function() {
             width: 50px;
             height: 50px;
             border-radius: 50%;
+            position: absolute;
+            z-index: 100;
+            pointer-events: none;
+            animation: attackAnim 0.6s forwards;
+        }
+        
+        .battle-particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
         }
         
         .attack-effect.fire { background: radial-gradient(#ff4422, transparent); }
         .attack-effect.water { background: radial-gradient(#3399ff, transparent); }
         .attack-effect.grass { background: radial-gradient(#33cc33, transparent); }
-        /* Ajoutez d'autres types selon besoin */
+        .attack-effect.normal { background: radial-gradient(#aaaabb, transparent); }
+        .attack-effect.electric { background: radial-gradient(#ffcc33, transparent); }
+        .attack-effect.ice { background: radial-gradient(#66ccff, transparent); }
+        .attack-effect.fighting { background: radial-gradient(#bb5544, transparent); }
+        .attack-effect.poison { background: radial-gradient(#aa5599, transparent); }
+        .attack-effect.ground { background: radial-gradient(#ddbb55, transparent); }
+        .attack-effect.flying { background: radial-gradient(#8899ff, transparent); }
+        .attack-effect.psychic { background: radial-gradient(#ff5599, transparent); }
+        .attack-effect.bug { background: radial-gradient(#aabb22, transparent); }
+        .attack-effect.rock { background: radial-gradient(#bbaa66, transparent); }
+        .attack-effect.ghost { background: radial-gradient(#6666bb, transparent); }
+        .attack-effect.dragon { background: radial-gradient(#7766ee, transparent); }
+        .attack-effect.dark { background: radial-gradient(#775544, transparent); }
+        .attack-effect.steel { background: radial-gradient(#aaaabb, transparent); }
+        .attack-effect.fairy { background: radial-gradient(#ee99ee, transparent); }
     `;
     document.head.appendChild(styleSheet);
+
+    // Fonction pour créer des particules d'arrière-plan dans l'arène de combat
+    function createParticles() {
+        const battleArena = document.querySelector('.battle-arena');
+        if (!battleArena) return;
+        
+        for (let i = 0; i < 15; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'battle-particle';
+            particle.style.width = `${Math.random() * 4 + 2}px`;
+            particle.style.height = `${Math.random() * 4 + 2}px`;
+            particle.style.background = 'rgba(255, 255, 255, 0.3)';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            particle.style.animation = `float ${Math.random() * 8 + 4}s infinite ease-in-out`;
+            
+            battleArena.appendChild(particle);
+        }
+    }
+    
+    // Créer des particules pour l'arène de combat
+    createParticles();
+    
+    // Ajout des écouteurs d'événements pour les animations de combat
+    document.addEventListener('battle:attack', function(e) {
+        const { attacker, defender, moveType } = e.detail;
+        animateAttack(attacker, defender, moveType);
+    });
+    
+    // Fonction d'animation d'attaque
+    function animateAttack(attackerType, defenderSelector, moveType) {
+        const battleArena = document.querySelector('.battle-arena');
+        if (!battleArena) return;
+        
+        const isPlayerAttack = attackerType === 'player';
+        const attackerSelector = isPlayerAttack ? '.my-pokemon .battle-sprite' : '.enemy-pokemon .battle-sprite';
+        const defenderSelector2 = isPlayerAttack ? '.enemy-pokemon .battle-sprite' : '.my-pokemon .battle-sprite';
+        
+        const attacker = document.querySelector(attackerSelector);
+        const defender = document.querySelector(defenderSelector || defenderSelector2);
+        
+        if (!attacker || !defender) {
+            console.error('Attacker or defender element not found', { attackerSelector, defenderSelector, defenderSelector2 });
+            return;
+        }
+        
+        // Animation de l'attaquant
+        const direction = isPlayerAttack ? 1 : -1;
+        attacker.style.transform = `translateX(${20 * direction}px)`;
+        
+        // Créer l'effet d'attaque
+        setTimeout(() => {
+            createAttackEffect(moveType || 'normal', defender, battleArena);
+            
+            // Animation du défenseur
+            defender.style.animation = 'shake 0.5s ease';
+            
+            // Réinitialiser les positions
+            setTimeout(() => {
+                attacker.style.transform = '';
+                defender.style.animation = '';
+            }, 500);
+        }, 300);
+    }
+    
+    // Créer un effet visuel pour l'attaque
+    function createAttackEffect(moveType, target, arena) {
+        const effect = document.createElement('div');
+        effect.className = `attack-effect ${moveType}`;
+        
+        // Positionnement de l'effet
+        const targetRect = target.getBoundingClientRect();
+        const arenaRect = arena.getBoundingClientRect();
+        effect.style.left = `${targetRect.left - arenaRect.left + targetRect.width / 2 - 25}px`;
+        effect.style.top = `${targetRect.top - arenaRect.top + targetRect.height / 2 - 25}px`;
+        
+        arena.appendChild(effect);
+        setTimeout(() => effect.remove(), 600);
+    }
+    
+    // Gestion des boutons d'attaque
+    document.querySelectorAll('.move-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Les données seront traitées par main.js
+            // On ajoute juste un effet visuel ici
+            const moveType = this.dataset.type || 'normal';
+            
+            // Déclencher une animation d'attaque
+            const attackEvent = new CustomEvent('battle:attack', {
+                detail: {
+                    attacker: 'player',
+                    moveType: moveType
+                }
+            });
+            document.dispatchEvent(attackEvent);
+        });
+    });
+    
+    // Mise à jour dynamique pour les nouveaux boutons d'attaque
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach(node => {
+                    if (node.nodeType === 1 && node.classList.contains('move-btn') && !node._hasEventListener) {
+                        node.addEventListener('click', function() {
+                            const moveType = this.dataset.type || 'normal';
+                            
+                            const attackEvent = new CustomEvent('battle:attack', {
+                                detail: {
+                                    attacker: 'player',
+                                    moveType: moveType
+                                }
+                            });
+                            document.dispatchEvent(attackEvent);
+                        });
+                        node._hasEventListener = true;
+                    }
+                });
+            }
+        });
+    });
+    
+    // Observer les changements dans la grille des mouvements
+    const movesGrid = document.getElementById('movesGrid');
+    if (movesGrid) {
+        observer.observe(movesGrid, { childList: true, subtree: true });
+    }
 });

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <h1 id="pageTitle">Pokédex Aléatoire</h1>
+        
+        <!-- Mode Pokédex -->
+        <div id="pokedexMode">
+            <div class="buttons-container">
+                <button id="randomBtn" class="random-btn">Pokémon Aléatoire</button>
+                <button id="battleBtn" class="battle-btn">Commencer un Combat</button>
+            </div>
+            
+            <div id="pokemonCard" class="pokemon-card" style="display: none;">
+                <!-- Le contenu sera généré dynamiquement par JS -->
+            </div>
+        </div>
+            
+        <!-- Mode Combat (caché par défaut) -->
+        <div id="battleMode" style="display: none;">
+            <div class="battle-arena">
+                <!-- Pokémon ennemi en haut à droite -->
+                <div class="battle-pokemon enemy-pokemon">
+                    <div class="battle-info">
+                        <div class="battle-name" id="enemyName"></div>
+                        <div class="battle-hp-bar">
+                            <div class="hp-label" id="enemyHPLabel"></div>
+                            <div class="hp-bar-container">
+                                <div class="hp-bar" id="enemyHPBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="battle-sprite enemy-sprite" id="enemySprite">
+                        <!-- Image générée par JS -->
+                    </div>
+                </div>
+                
+                <!-- Mon Pokémon en bas à gauche -->
+                <div class="battle-pokemon my-pokemon">
+                    <div class="battle-sprite my-sprite" id="mySprite">
+                        <!-- Image générée par JS -->
+                    </div>
+                    <div class="battle-info">
+                        <div class="battle-name" id="myName"></div>
+                        <div class="battle-hp-bar">
+                            <div class="hp-label" id="myHPLabel"></div>
+                            <div class="hp-bar-container">
+                                <div class="hp-bar" id="myHPBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contrôles de combat -->
+            <div class="battle-controls">
+                <div class="battle-log" id="battleLog">
+                    <!-- Logs générés par JS -->
+                </div>
+                
+                <div class="battle-buttons">
+                    <div class="moves-grid" id="movesGrid">
+                        <!-- Attaques générées par JS -->
+                    </div>
+                </div>
+                
+                <div class="control-buttons">
+                    <button id="newBattleBtn" class="new-battle-btn">Nouveau Combat</button>
+                    <button id="returnBtn" class="return-btn">Retour</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="battle.js"></script>
+    <script src="main.js"></script>
+</body>
+</html> 
