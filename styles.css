@@ -624,6 +624,43 @@ td:first-child {
     font-display: swap;
 }
 
+/* Écran de chargement */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.loading-screen.active {
+    display: flex;
+    opacity: 1;
+}
+
+.loading-bar-container {
+    width: 300px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(to right, #3c5aa6, #ff5350);
+    border-radius: 2px;
+    transition: width 1s ease-in-out;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .container {
@@ -680,4 +717,17 @@ td:first-child {
         margin-bottom: 15px;
         width: 100%;
     }
+}
+
+/* Section bio Pokémon */
+.pokemon-bio {
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 0.95em;
+    line-height: 1.5;
+    color: #333;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
 }

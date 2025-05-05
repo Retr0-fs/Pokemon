@@ -34,10 +34,18 @@ async function getRandomPokemon() {
     const randomId = Math.floor(Math.random() * 898) + 1;
     try {
         const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`);
-        if (!response.ok) {
-            throw new Error('Erreur lors de la récupération du Pokémon');
-        }
-        return await response.json();
+        const pokemon = await response.json();
+        
+        // Récupérer la description du Pokémon
+        const speciesResponse = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${randomId}`);
+        const speciesData = await speciesResponse.json();
+        
+        // Trouver la description en français
+        const frDescription = speciesData.flavor_text_entries.find(
+            entry => entry.language.name === "fr"
+        )?.flavor_text || "Description non disponible";
+
+        return { ...pokemon, description: frDescription.replace(/\f/g, ' ') };
     } catch (error) {
         console.error('Erreur:', error);
         return null;
@@ -146,6 +154,11 @@ function displayPokemonInPokedex(pokemon) {
                 
                 <div class="section-header">Statistiques</div>
                 <table>${statsHTML}</table>
+
+                <div class="section-header">Bio</div>
+                <div class="pokemon-bio">
+                    ${pokemon.description}
+                </div>
             </div>
         </div>
     `;
@@ -418,4 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialiser l'application avec un Pokémon aléatoire
     document.getElementById('randomBtn').click();
-}); 
+});
+
+//Function
